@@ -1,0 +1,5 @@
+connection_string = "DefaultEndpointsProtocol=https;AccountName=csg10032002ba1d46d6;AccountKey=T5TiTsmpHHAGl9FXpdmlHuVn4oNu2vJH/sILoTRewkVU2G27aNa/M1ZfYmpdzJZEJx0cEMHuN6Je+AStfcnEXw==;EndpointSuffix=core.windows.net"
+container_name = "trainedmodel"
+upload_directory = "OptionValuationModel_opt"
+file_to_upload = "scalars_model_opt.save"
+input_data_set = "InputDataSetLatest.csv"
