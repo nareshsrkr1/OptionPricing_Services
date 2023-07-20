@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify,current_app
 import traceback
 from sklearn.model_selection import train_test_split
-from blobUpload import load_dataset, build_model,scale_data,getinputdatablob,uploadtoblob,upload_model_to_blob
+from blobUpload import load_dataset, build_model,scale_data,getinputdatablob,uploadtoblob,save_model
 import logging as logger
 
 
@@ -36,7 +36,12 @@ def train_model():
         test_accuracy = 100 - test_loss * 100
         print("Test Accuracy: {:.2f}%".format(test_accuracy))
         logger.info("Test Accuracy: {:.2f}%".format(test_accuracy))
-        upload_model_to_blob(model, scaler)
+
+        model_filename = current_app.config['files']['model_filename']
+        scaler_filename = current_app.config['files']['scaler_filename']
+        save_model(model, scaler, model_filename, scaler_filename)
+
+        uploadtoblob(model, scaler)
         logger.info('Model and scalars saved')
 
         return jsonify({'message': 'Model trained and saved successfully.'})
