@@ -3,6 +3,7 @@ import traceback
 from sklearn.model_selection import train_test_split
 from blobUpload import load_dataset, build_model,scale_data,getinputdatablob,uploadtoblob,save_model
 import logging as logger
+import config
 
 
 modeltraining_routes = Blueprint('modeltraining_routes', __name__)
@@ -37,8 +38,8 @@ def train_model():
         print("Test Accuracy: {:.2f}%".format(test_accuracy))
         logger.info("Test Accuracy: {:.2f}%".format(test_accuracy))
 
-        model_filename = current_app.config['files']['model_filename']
-        scaler_filename = current_app.config['files']['scaler_filename']
+        model_filename = config.upload_directory
+        scaler_filename = config.file_to_upload
         save_model(model, scaler, model_filename, scaler_filename)
 
         uploadtoblob(model, scaler)
