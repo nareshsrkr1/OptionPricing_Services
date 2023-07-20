@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python","flask_app.py"]
+CMD ["python","flask_app_train.py"]
