@@ -8,6 +8,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, LeakyReLU
 from keras.optimizers import Adam
 from config import connection_string, container_name, upload_directory, file_to_upload, input_data_set
+import joblib
 
 
 
@@ -97,14 +98,14 @@ def upload_model_to_blob(model, scaler):
         logging.error("An error occurred while uploading the model and scaler to Blob Storage: %s", str(e))
 
 
-# def save_model(model, scaler, model_filename, scaler_filename):
-#     try:
-#         # Save the model and scaler
-#         model.save(model_filename, save_format='tf')
-#         joblib.dump(scaler, scaler_filename)
-#     except Exception as e:
-#         print('error', str(e))
-#         logging.error("An error occurred while saving the model and scaler: %s", str(e))
+def save_model(model, scaler, model_filename, scaler_filename):
+    try:
+        # Save the model and scaler
+        model.save(model_filename, save_format='tf')
+        joblib.dump(scaler, scaler_filename)
+    except Exception as e:
+        print('error', str(e))
+        logging.error("An error occurred while saving the model and scaler: %s", str(e))
 
 
 def build_model(input_dim):
