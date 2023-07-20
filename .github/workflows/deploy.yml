@@ -1,0 +1,45 @@
+name: Docker Hub Deployment
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch: # Manual trigger
+
+env:
+  DOCKER_HUB_USERNAME: rahuldocker122
+  DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+  DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    
+    - name: Build Docker image
+      run: docker build -t $DOCKER_HUB_USERNAME/dp-rest-app .
+    
+    - name: Log in to Docker Hub
+      run: docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
+    
+    - name: Push image to Docker Hub
+      run: docker push $DOCKER_HUB_USERNAME/dp-rest-app
+      
+    - name: Deploy to Azure VM
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.AZ_DUMMY_VM_IP }}
+        username: ${{ secrets.AZ_DUMMY_VM_USERNAME }}
+        key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+        script: |
+          eval "$(ssh-agent)"
+          ssh-add - <<<"${{ secrets.VM_SSH_PRIVATE_KEY }}"
+          docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
+          docker stop $(docker ps -aq --filter "ancestor=rahuldocker122/dp-rest-app")
+          docker rmi -f $(docker images -q rahuldocker122/dp-rest-app)
+          docker pull rahuldocker122/dp-rest-app:latest
+          docker run -d -p 7000:7000 rahuldocker122/dp-rest-app:latest
+          sh /home/azureuser/cleanup.sh
