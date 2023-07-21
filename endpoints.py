@@ -42,7 +42,7 @@ def train_model():
         scaler_filename = config.file_to_upload
         save_model(model, scaler, model_filename, scaler_filename)
 
-        uploadtoblob(model, scaler)
+        uploadtoblob()
         logger.info('Model and scalars saved')
 
         return jsonify({'message': 'Model trained and saved successfully.'})
